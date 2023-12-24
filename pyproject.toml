@@ -1,0 +1,15 @@
+[tool.black]
+line-length = 160
+skip-string-normalization = true
+include = '\.pyi?$'
+exclude = '''
+/(
+  \.toml
+  | \.git
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  |\.ini
+  |Dockerfile
+)/
+'''
