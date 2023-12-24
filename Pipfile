@@ -1,0 +1,27 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi="*"
+
+pydantic="*"
+
+sqlalchemy="*"
+asyncpg="*"
+alembic="*"
+psycopg2-binary="*"
+
+
+fastapi-cache2="*"
+
+gunicorn="*"
+
+[dev-packages]
+pytest="*"
+pytest-asyncio="*"
+pytest-mock="*"
+
+[requires]
+python_version = "3.11"
