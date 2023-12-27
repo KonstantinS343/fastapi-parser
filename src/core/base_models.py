@@ -7,5 +7,9 @@ class TimeStampedModel(BaseModel):
     created_at: datetime
 
 
-class Task(BaseModel):
+class TaskURL(BaseModel):
     url: str
+
+
+class TaskQuery(BaseModel):
+    query: str
