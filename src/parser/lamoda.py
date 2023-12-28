@@ -3,6 +3,9 @@ from httpx import AsyncClient
 
 
 async def parse_lamoda_products(url: str) -> None:
+    """
+    A function for parsing the lamoda website via a link.
+    """
     async with AsyncClient() as client:
         response = await client.get(url)
 
