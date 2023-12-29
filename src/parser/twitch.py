@@ -1,9 +1,12 @@
 from httpx import AsyncClient, HTTPError
 
 from config import settings
+from core.mongo import MongoService
+from models.twitch import Twitch, Stream
 
 
 async def parse_twitch(type: str, query: str, limit: int = 20) -> None:
+    mongo_service = MongoService()
     data = {'client_id': settings.twitch_settings.client_id, 'client_secret': settings.twitch_settings.client_secret, 'grant_type': 'client_credentials'}
 
     params = {
@@ -38,3 +41,11 @@ async def parse_twitch(type: str, query: str, limit: int = 20) -> None:
                 after = response['pagination']['cursor']
             else:
                 break
+        for item in data['data']:
+            if type == 'categories':
+                obj = Twitch(name=item['name'])
+            elif type == 'channels':
+                obj = Twitch(name=item['display_name'])
+            elif type == 'stream':
+                obj = Stream(channel=item['user_name'], audience=item['viewer_count'])
+            mongo_service.insert('twitch_' + type, obj)

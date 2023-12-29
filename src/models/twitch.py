@@ -1,17 +1,10 @@
 from core.base_models import TimeStampedModel
 
 
-class Games(TimeStampedModel):
+class Twitch(TimeStampedModel):
     name: str
-    audience: int
 
 
-class Streamers(TimeStampedModel):
-    name: str
-    followers: int
-
-
-class Stream(TimeStampedModel):
+class Stream(Twitch):
     channel: str
-    name: str
     audience: str
