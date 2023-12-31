@@ -5,6 +5,6 @@ class Twitch(TimeStampedModel):
     name: str
 
 
-class Stream(Twitch):
+class Stream(TimeStampedModel):
     channel: str
-    audience: str
+    audience: int

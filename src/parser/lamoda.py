@@ -26,6 +26,3 @@ async def parse_lamoda_products(url: str) -> None:
 
                 product = Product(name=name, brand=brand, price=price)
                 await mongo_service.insert('lamoda', product.model_dump())
-
-
-print('gggg')

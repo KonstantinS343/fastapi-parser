@@ -36,9 +36,11 @@ async def parse_twitch(type: str, query: str, limit: int = 20) -> None:
             response = await client.get(url, headers=headers, params={search_str: query, 'first': first, 'after': after})
             if response.status_code == 200:
                 response = response.json()
-                data['data'].append(response['data'])
+                data['data'].extend(response['data'])
                 limit -= first
                 after = response['pagination']['cursor']
+                if type == 'stream':
+                    break
             else:
                 break
         for item in data['data']:
@@ -48,4 +50,4 @@ async def parse_twitch(type: str, query: str, limit: int = 20) -> None:
                 obj = Twitch(name=item['display_name'])
             elif type == 'stream':
                 obj = Stream(channel=item['user_name'], audience=item['viewer_count'])
-            mongo_service.insert('twitch_' + type, obj)
+            await mongo_service.insert('twitch_' + type, obj.model_dump())
