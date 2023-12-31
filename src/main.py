@@ -1,12 +1,14 @@
 from fastapi import FastAPI
 
-from routers.lamoda import router
+from routers.lamoda import router as lamoda_router
+from routers.twitch import router as twitch_router
 from config import settings
 
 
 app = FastAPI()
 
-app.include_router(router)
+app.include_router(lamoda_router)
+app.include_router(twitch_router)
 
 
 if __name__ == '__main__':

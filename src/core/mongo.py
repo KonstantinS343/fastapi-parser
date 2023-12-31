@@ -14,3 +14,7 @@ class MongoService:
         collection = self.db[collection]
         document['created_at'] = str(datetime.now())
         await collection.insert_one(document)
+
+    async def get(self, collection, query={}):
+        collection = self.db[collection]
+        return collection.find(query)
