@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "70825a80fd0e0529d8a3e205abfd26543d9830a5dcf5a8a5337c8ff5a710b8d6"
+            "sha256": "f96570166e078d81f1b6e1affb006ad233f72d34a8e6e97a6d4f50b463b93bd5"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -48,6 +48,14 @@
             ],
             "markers": "python_version >= '3.6'",
             "version": "==2023.11.17"
+        },
+        "click": {
+            "hashes": [
+                "sha256:ae74fb96c20a0277a1d615f1e4d73c8414f5a98db8b799a7931d1582f3390c28",
+                "sha256:ca9853ad459e787e2192211578cc907e7594e294c7ccc834310722b41b9ca6de"
+            ],
+            "markers": "python_version >= '3.7'",
+            "version": "==8.1.7"
         },
         "dnspython": {
             "hashes": [
@@ -366,6 +374,15 @@
             ],
             "markers": "python_version >= '3.8'",
             "version": "==4.9.0"
+        },
+        "uvicorn": {
+            "hashes": [
+                "sha256:6dddbad1d7ee0f5140aba5ec138ddc9612c5109399903828b4874c9937f009c2",
+                "sha256:ce107f5d9bd02b4636001a77a4e74aab5e1e2b146868ebbad565237145af444c"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.8'",
+            "version": "==0.25.0"
         }
     },
     "develop": {
