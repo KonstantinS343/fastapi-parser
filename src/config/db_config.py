@@ -6,7 +6,7 @@ class MongoDBConfig(BaseSettings):
     port: int
     db: str
 
-    model_config = SettingsConfigDict(env_file='.env', env_file_encoding='utf-8', env_prefix='MONGO_')
+    model_config = SettingsConfigDict(env_file='../.env', env_file_encoding='utf-8', env_prefix='MONGO_')
 
 
 mongo_settings = MongoDBConfig()
