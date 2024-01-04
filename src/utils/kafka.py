@@ -15,7 +15,6 @@ class Kafka:
 
         module = import_module(module_name)  # type: ignore
         function = getattr(module, function_name)  # type: ignore
-        print(task)
         if isinstance(task, str):
             await function(task)
         else:
