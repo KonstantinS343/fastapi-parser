@@ -24,3 +24,4 @@ class TaskURL(BaseModel):
 
 class TaskQuery(BaseModel):
     query: str
+    limit: str = '20'
