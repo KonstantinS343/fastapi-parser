@@ -7,6 +7,7 @@ name = "pypi"
 fastapi = "*"
 httpx = "*"
 beautifulsoup4 = "*"
+uvicorn = "*"
 
 pydantic = "*"
 
@@ -15,6 +16,8 @@ python-dotenv = "*"
 
 pymongo = "*"
 motor = "*"
+
+aiokafka = "*"
 
 [dev-packages]
 flake8 = "*"
