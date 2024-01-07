@@ -5,11 +5,11 @@ from core.mongo import MongoService
 from models.twitch import Twitch, Stream
 
 
-async def parse_twitch(type: str, query: str, limit: int = 20) -> None:
+async def parse_twitch(type: str, query: str, lim: str) -> None:
     """
     A function for twitch parsing using the Twitch API, for categories, streamers and stream.
     """
-
+    limit = int(lim)
     mongo_service = MongoService()
 
     data = {'client_id': settings.twitch_settings.client_id, 'client_secret': settings.twitch_settings.client_secret, 'grant_type': 'client_credentials'}

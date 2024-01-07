@@ -6,8 +6,8 @@ from bson.objectid import ObjectId
 
 from core.base_models import TaskURL
 from core.mongo import MongoService
-from parser.lamoda import parse_lamoda_products
 from models.lamoda import Product
+from utils.kafka import Kafka
 
 
 router = APIRouter(prefix='/lamoda')
@@ -19,7 +19,9 @@ async def parse_lamoda(task: TaskURL) -> Response:
     """
     A function that implements a post request with the launch of a parser for lamoda.
     """
-    await parse_lamoda_products(task.url)
+    kafka = Kafka()
+    await kafka.send_one('parse', 'parser.lamoda parse_lamoda_products ' + task.url)
+
     return Response(content='Parsing task created successfully', status_code=status.HTTP_201_CREATED, media_type='text/plain')
 
 

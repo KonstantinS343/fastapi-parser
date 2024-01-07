@@ -15,7 +15,10 @@ class Kafka:
 
         module = import_module(module_name)  # type: ignore
         function = getattr(module, function_name)  # type: ignore
-        await function(*task)
+        if isinstance(task, str):
+            await function(task)
+        else:
+            await function(*task)
 
     async def send_one(self, topic: str, message: str):
         producer = AIOKafkaProducer(bootstrap_servers=self.bootstrap_servers)
@@ -23,10 +26,10 @@ class Kafka:
 
         try:
             await producer.send_and_wait(topic=topic, value=message.encode())
-        except Exception:
-            print('Error')
+        except Exception as e:
+            print(e)
         finally:
-            producer.stop()
+            await producer.stop()
 
     async def consume(self, topic: str):
         consumer = AIOKafkaConsumer(topic, bootstrap_servers=self.bootstrap_servers)
@@ -35,7 +38,7 @@ class Kafka:
         try:
             async for i in consumer:
                 await self.process_message(i.value)
-        except Exception:
-            print('Error')
+        except Exception as e:
+            print(e)
         finally:
-            consumer.stop()
+            await consumer.stop()
