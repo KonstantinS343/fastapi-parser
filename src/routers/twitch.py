@@ -6,8 +6,8 @@ from bson.objectid import ObjectId
 
 from core.base_models import TaskQuery
 from core.mongo import MongoService
-from parser.twitch import parse_twitch
 from models.twitch import Twitch, Stream
+from utils.kafka import Kafka
 
 
 router = APIRouter(prefix='/twitch')
@@ -19,7 +19,8 @@ async def parse_twitch_categories(task: TaskQuery) -> Response:
     """
     A function that implements a post request with the launch of a parser for twitch, that parse categories.
     """
-    await parse_twitch('categories', task.query)
+    kafka = Kafka()
+    await kafka.send_one('parse', 'parser.twitch parse_twitch categories ' + task.query + ' ' + task.limit)
     return Response(content='Parsing task created successfully', status_code=status.HTTP_201_CREATED, media_type='text/plain')
 
 
@@ -28,7 +29,8 @@ async def parse_twitch_channels(task: TaskQuery) -> Response:
     """
     A function that implements a post request with the launch of a parser for twitch, that parse channels.
     """
-    await parse_twitch('channels', task.query)
+    kafka = Kafka()
+    await kafka.send_one('parse', 'parser.twitch parse_twitch channels ' + task.query + ' ' + task.limit)
     return Response(content='Parsing task created successfully', status_code=status.HTTP_201_CREATED, media_type='text/plain')
 
 
@@ -37,7 +39,8 @@ async def parse_twitch_stream(task: TaskQuery) -> Response:
     """
     A function that implements a post request with the launch of a parser for twitch, that parse stream.
     """
-    await parse_twitch('stream', task.query)
+    kafka = Kafka()
+    await kafka.send_one('parse', 'parser.twitch parse_twitch stream ' + task.query + ' ' + task.limit)
     return Response(content='Parsing task created successfully', status_code=status.HTTP_201_CREATED, media_type='text/plain')
 
 

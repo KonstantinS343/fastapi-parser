@@ -17,6 +17,8 @@ python-dotenv = "*"
 pymongo = "*"
 motor = "*"
 
+aiokafka = "*"
+
 [dev-packages]
 flake8 = "*"
 mypy = "*"
