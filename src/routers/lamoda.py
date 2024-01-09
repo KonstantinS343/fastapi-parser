@@ -8,6 +8,7 @@ from core.base_models import TaskURL
 from core.mongo import MongoService
 from models.lamoda import Product
 from utils.kafka import Kafka
+from utils.redis import get_cache, set_cache, clear_cache
 
 
 router = APIRouter(prefix='/lamoda')
@@ -21,7 +22,7 @@ async def parse_lamoda(task: TaskURL) -> Response:
     """
     kafka = Kafka()
     await kafka.send_one('parse', 'parser.lamoda parse_lamoda_products ' + task.url)
-
+    await clear_cache('lamoda', 'lamoda')
     return Response(content='Parsing task created successfully', status_code=status.HTTP_201_CREATED, media_type='text/plain')
 
 
@@ -30,12 +31,14 @@ async def products() -> Dict[str, List[Product]]:
     """
     A function that implements a get request, that returns all data about lamoda from the database.
     """
-    cursor = await mongo.get(collection='lamoda')
-    products = []
-    async for document in cursor:
-        document['_id'] = str(document['_id'])
-        products.append(document)
-
+    products = await get_cache('lamoda', 'lamoda')
+    if not products:
+        cursor = await mongo.get(collection='lamoda')
+        products = []
+        async for document in cursor:
+            document['_id'] = str(document['_id'])
+            products.append(document)
+        await set_cache('lamoda', products, 'lamoda')
     return {'data': products}
 
 

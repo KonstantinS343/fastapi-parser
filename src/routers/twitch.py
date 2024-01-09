@@ -8,6 +8,7 @@ from core.base_models import TaskQuery
 from core.mongo import MongoService
 from models.twitch import Twitch, Stream
 from utils.kafka import Kafka
+from utils.redis import get_cache, set_cache, clear_cache
 
 
 router = APIRouter(prefix='/twitch')
@@ -21,6 +22,7 @@ async def parse_twitch_categories(task: TaskQuery) -> Response:
     """
     kafka = Kafka()
     await kafka.send_one('parse', 'parser.twitch parse_twitch categories ' + task.query + ' ' + task.limit)
+    await clear_cache('twitch_categories', 'twitch')
     return Response(content='Parsing task created successfully', status_code=status.HTTP_201_CREATED, media_type='text/plain')
 
 
@@ -31,6 +33,7 @@ async def parse_twitch_channels(task: TaskQuery) -> Response:
     """
     kafka = Kafka()
     await kafka.send_one('parse', 'parser.twitch parse_twitch channels ' + task.query + ' ' + task.limit)
+    await clear_cache('twitch_channels', 'twitch')
     return Response(content='Parsing task created successfully', status_code=status.HTTP_201_CREATED, media_type='text/plain')
 
 
@@ -41,6 +44,7 @@ async def parse_twitch_stream(task: TaskQuery) -> Response:
     """
     kafka = Kafka()
     await kafka.send_one('parse', 'parser.twitch parse_twitch stream ' + task.query + ' ' + task.limit)
+    await clear_cache('twitch_stream', 'twitch')
     return Response(content='Parsing task created successfully', status_code=status.HTTP_201_CREATED, media_type='text/plain')
 
 
@@ -49,11 +53,14 @@ async def categories() -> Dict[str, List[Twitch]]:
     """
     A function that implements a get request, that returns all data about twitch categories from the database.
     """
-    cursor = await mongo.get(collection='twitch_categories')
-    products = []
-    async for document in cursor:
-        document['_id'] = str(document['_id'])
-        products.append(document)
+    products = await get_cache('twitch_categories', 'twitch')
+    if not products:
+        cursor = await mongo.get(collection='twitch_categories')
+        products = []
+        async for document in cursor:
+            document['_id'] = str(document['_id'])
+            products.append(document)
+        await set_cache('twitch_categories', products, 'twitch')
 
     return {'data': products}
 
@@ -74,11 +81,14 @@ async def channels() -> Dict[str, List[Twitch]]:
     """
     A function that implements a get request, that returns all data about twitch channels from the database.
     """
-    cursor = await mongo.get(collection='twitch_channels')
-    products = []
-    async for document in cursor:
-        document['_id'] = str(document['_id'])
-        products.append(document)
+    products = await get_cache('twitch_channels', 'twitch')
+    if not products:
+        cursor = await mongo.get(collection='twitch_channels')
+        products = []
+        async for document in cursor:
+            document['_id'] = str(document['_id'])
+            products.append(document)
+        await set_cache('twitch_channels', products, 'twitch')
 
     return {'data': products}
 
@@ -99,11 +109,14 @@ async def streams() -> Dict[str, List[Stream]]:
     """
     A function that implements a get request, that returns all data about twitch stream from the database.
     """
-    cursor = await mongo.get(collection='twitch_stream')
-    products = []
-    async for document in cursor:
-        document['_id'] = str(document['_id'])
-        products.append(document)
+    products = await get_cache('twitch_stream', 'twitch')
+    if not products:
+        cursor = await mongo.get(collection='twitch_stream')
+        products = []
+        async for document in cursor:
+            document['_id'] = str(document['_id'])
+            products.append(document)
+        await set_cache('twitch_stream', products, 'twitch')
 
     return {'data': products}
 
