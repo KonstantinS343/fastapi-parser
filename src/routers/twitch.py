@@ -9,6 +9,7 @@ from core.mongo import MongoService
 from models.twitch import Twitch, Stream
 from utils.kafka import Kafka
 from utils.redis import get_cache, set_cache, clear_cache
+from utils.services import parse_redis_result
 
 
 router = APIRouter(prefix='/twitch')
@@ -62,7 +63,7 @@ async def categories() -> Dict[str, List[Twitch]]:
             products.append(document)
         await set_cache('twitch_categories', products, 'twitch')
 
-    return {'data': products}
+    return {'data': await parse_redis_result(products)}
 
 
 @router.get('/categories/{category_id}', response_model=Dict[str, Twitch])
@@ -90,7 +91,7 @@ async def channels() -> Dict[str, List[Twitch]]:
             products.append(document)
         await set_cache('twitch_channels', products, 'twitch')
 
-    return {'data': products}
+    return {'data': await parse_redis_result(products)}
 
 
 @router.get('/channels/{channel_id}', response_model=Dict[str, Twitch])
@@ -118,7 +119,7 @@ async def streams() -> Dict[str, List[Stream]]:
             products.append(document)
         await set_cache('twitch_stream', products, 'twitch')
 
-    return {'data': products}
+    return {'data': await parse_redis_result(products)}
 
 
 @router.get('/streams/{stream_id}', response_model=Dict[str, Twitch])

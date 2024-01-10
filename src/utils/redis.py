@@ -12,7 +12,7 @@ async def get_cache(key: str, type: str):
 
     result = await redis.get(key)
     await redis.close()
-    return result
+    return result.decode("utf-8") if result else None
 
 
 async def set_cache(key: str, value: Any, type: str):
