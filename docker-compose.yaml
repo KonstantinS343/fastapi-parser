@@ -1,0 +1,74 @@
+version: "3.8"
+
+services:
+
+  fastapi:
+    container_name: fastapi_parser
+    build:
+      context: .
+    command: sh -c "./src/scripts/fastapi.sh && ./src/scripts/consumer.sh"
+
+    ports:
+      - "2000:2000"
+
+    depends_on:
+      - mongo
+      - kafka
+      - redis
+  
+  mongo:
+    container_name: mongo_parser
+    image: mongodb/mongodb-community-server:7.0.2-ubi8
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo:/data/db
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22181:2181
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka
+    ports:
+      - '9092:9092'
+      - '29092:29092'
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui
+    container_name: kafka-ui
+    ports:
+      - 8090:8080
+    restart: always
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:29092
+      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+    links:
+      - kafka
+      - zookeeper
+
+  redis:
+    container_name: redis_parser
+    image: redis:latest
+    ports:
+      - '6378:6379'
+    volumes:
+      - redis:/data
+
+volumes:
+  redis:
+  mongo:
