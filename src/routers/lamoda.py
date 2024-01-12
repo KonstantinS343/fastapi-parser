@@ -9,6 +9,7 @@ from core.mongo import MongoService
 from models.lamoda import Product
 from utils.kafka import Kafka
 from utils.redis import get_cache, set_cache, clear_cache
+from utils.services import parse_redis_result
 
 
 router = APIRouter(prefix='/lamoda')
@@ -39,7 +40,7 @@ async def products() -> Dict[str, List[Product]]:
             document['_id'] = str(document['_id'])
             products.append(document)
         await set_cache('lamoda', products, 'lamoda')
-    return {'data': products}
+    return {'data': await parse_redis_result(products)}
 
 
 @router.get('/product/{product_id}', response_model=Dict[str, Product])
