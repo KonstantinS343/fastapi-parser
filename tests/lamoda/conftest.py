@@ -17,13 +17,3 @@ async def lamoda_product():
     inserted_id = await mongo.insert('lamoda', test_product_data)
 
     return inserted_id
-
-
-# @pytest.fixture(autouse=True)
-# async def product():
-#    client = mongomock.MongoClient()
-#    db = client.test_fastapi
-#
-#    collection = db.lamoda
-#    document = {"key": "value"}
-#    collection.insert_one(document)
