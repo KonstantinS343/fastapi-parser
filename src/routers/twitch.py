@@ -1,11 +1,11 @@
-from fastapi import APIRouter, Response, status
+from fastapi import APIRouter, Response, status, Depends
 
 from typing import List, Dict
 
 from bson.objectid import ObjectId
 
 from core.base_models import TaskQuery
-from core.mongo import MongoService
+from core.mongo import MongoService, get_mongo
 from models.twitch import Twitch, Stream
 from utils.kafka import Kafka
 from utils.redis import get_cache, set_cache, clear_cache
@@ -13,7 +13,6 @@ from utils.services import parse_redis_result
 
 
 router = APIRouter(prefix='/twitch')
-mongo = MongoService()
 
 
 @router.post('/parse/categories')
@@ -50,13 +49,13 @@ async def parse_twitch_stream(task: TaskQuery) -> Response:
 
 
 @router.get('/categories', response_model=Dict[str, List[Twitch]])
-async def categories() -> Dict[str, List[Twitch]]:
+async def categories(session: MongoService = Depends(get_mongo)) -> Dict[str, List[Twitch]]:
     """
     A function that implements a get request, that returns all data about twitch categories from the database.
     """
     products = await get_cache('twitch_categories', 'twitch')
     if not products:
-        cursor = await mongo.get(collection='twitch_categories')
+        cursor = await session.get(collection='twitch_categories')
         products = []
         async for document in cursor:
             document['_id'] = str(document['_id'])
@@ -67,24 +66,24 @@ async def categories() -> Dict[str, List[Twitch]]:
 
 
 @router.get('/categories/{category_id}', response_model=Dict[str, Twitch])
-async def get_category(category_id: str) -> Dict[str, Twitch]:
+async def get_category(category_id: str, session: MongoService = Depends(get_mongo)) -> Dict[str, Twitch]:
     """
     A function that implements a get request, that returns information about a specific twitch channel from the database.
     """
-    cursor = await mongo.get(collection='twitch_categories', query={"_id": ObjectId(category_id)})
+    cursor = await session.get(collection='twitch_categories', query={"_id": ObjectId(category_id)})
     products = await cursor.next()
 
     return {'data': products}
 
 
 @router.get('/channels', response_model=Dict[str, List[Twitch]])
-async def channels() -> Dict[str, List[Twitch]]:
+async def channels(session: MongoService = Depends(get_mongo)) -> Dict[str, List[Twitch]]:
     """
     A function that implements a get request, that returns all data about twitch channels from the database.
     """
     products = await get_cache('twitch_channels', 'twitch')
     if not products:
-        cursor = await mongo.get(collection='twitch_channels')
+        cursor = await session.get(collection='twitch_channels')
         products = []
         async for document in cursor:
             document['_id'] = str(document['_id'])
@@ -95,24 +94,24 @@ async def channels() -> Dict[str, List[Twitch]]:
 
 
 @router.get('/channels/{channel_id}', response_model=Dict[str, Twitch])
-async def get_channel(channel_id: str) -> Dict[str, Twitch]:
+async def get_channel(channel_id: str, session: MongoService = Depends(get_mongo)) -> Dict[str, Twitch]:
     """
     A function that implements a get request, that returns information about a specific twitch category from the database.
     """
-    cursor = await mongo.get(collection='twitch_channels', query={"_id": ObjectId(channel_id)})
+    cursor = await session.get(collection='twitch_channels', query={"_id": ObjectId(channel_id)})
     products = await cursor.next()
 
     return {'data': products}
 
 
 @router.get('/streams', response_model=Dict[str, List[Stream]])
-async def streams() -> Dict[str, List[Stream]]:
+async def streams(session: MongoService = Depends(get_mongo)) -> Dict[str, List[Stream]]:
     """
     A function that implements a get request, that returns all data about twitch stream from the database.
     """
     products = await get_cache('twitch_stream', 'twitch')
     if not products:
-        cursor = await mongo.get(collection='twitch_stream')
+        cursor = await session.get(collection='twitch_stream')
         products = []
         async for document in cursor:
             document['_id'] = str(document['_id'])
@@ -122,12 +121,12 @@ async def streams() -> Dict[str, List[Stream]]:
     return {'data': await parse_redis_result(products)}
 
 
-@router.get('/streams/{stream_id}', response_model=Dict[str, Twitch])
-async def get_stream(stream_id: str) -> Dict[str, Twitch]:
+@router.get('/streams/{stream_id}', response_model=Dict[str, Stream])
+async def get_stream(stream_id: str, session: MongoService = Depends(get_mongo)) -> Dict[str, Stream]:
     """
     A function that implements a get request, that returns information about a specific twitch stream from the database.
     """
-    cursor = await mongo.get(collection='twitch_stream', query={"_id": ObjectId(stream_id)})
+    cursor = await session.get(collection='twitch_stream', query={"_id": ObjectId(stream_id)})
     products = await cursor.next()
 
     return {'data': products}
