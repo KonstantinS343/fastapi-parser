@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Response, status, Depends
 
-from typing import List, Dict
+from typing import List, Dict, Any
 
 from bson.objectid import ObjectId
 
@@ -48,8 +48,8 @@ async def parse_twitch_stream(task: TaskQuery) -> Response:
     return Response(content='Parsing task created successfully', status_code=status.HTTP_201_CREATED, media_type='text/plain')
 
 
-@router.get('/categories', response_model=Dict[str, List[Twitch]])
-async def categories(session: MongoService = Depends(get_mongo)) -> Dict[str, List[Twitch]]:
+@router.get('/categories', response_model=Dict[str, List[Dict[str, Any]]])
+async def categories(session: MongoService = Depends(get_mongo)) -> Dict[str, List[Dict[str, Any]]]:
     """
     A function that implements a get request, that returns all data about twitch categories from the database.
     """
@@ -76,8 +76,8 @@ async def get_category(category_id: str, session: MongoService = Depends(get_mon
     return {'data': products}
 
 
-@router.get('/channels', response_model=Dict[str, List[Twitch]])
-async def channels(session: MongoService = Depends(get_mongo)) -> Dict[str, List[Twitch]]:
+@router.get('/channels', response_model=Dict[str, List[Dict[str, Any]]])
+async def channels(session: MongoService = Depends(get_mongo)) -> Dict[str, List[Dict[str, Any]]]:
     """
     A function that implements a get request, that returns all data about twitch channels from the database.
     """
@@ -104,8 +104,8 @@ async def get_channel(channel_id: str, session: MongoService = Depends(get_mongo
     return {'data': products}
 
 
-@router.get('/streams', response_model=Dict[str, List[Stream]])
-async def streams(session: MongoService = Depends(get_mongo)) -> Dict[str, List[Stream]]:
+@router.get('/streams', response_model=Dict[str, List[Dict[str, Any]]])
+async def streams(session: MongoService = Depends(get_mongo)) -> Dict[str, List[Dict[str, Any]]]:
     """
     A function that implements a get request, that returns all data about twitch stream from the database.
     """

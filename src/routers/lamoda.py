@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Response, status, Depends
 
-from typing import List, Dict
+from typing import List, Dict, Any
 
 from bson.objectid import ObjectId
 
@@ -26,8 +26,8 @@ async def parse_lamoda(task: TaskURL) -> Response:
     return Response(content='Parsing task created successfully', status_code=status.HTTP_201_CREATED, media_type='text/plain')
 
 
-@router.get('/products', response_model=Dict[str, List[Product]])
-async def products(session: MongoService = Depends(get_mongo)) -> Dict[str, List[Product]]:
+@router.get('/products', response_model=Dict[str, List[Dict[str, Any]]])
+async def products(session: MongoService = Depends(get_mongo)) -> Dict[str, List[Dict[str, Any]]]:
     """
     A function that implements a get request, that returns all data about lamoda from the database.
     """
