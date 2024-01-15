@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 from httpx import AsyncClient
 
 from models.lamoda import Product
-from core.mongo import MongoService
+from core.mongo import get_mongo
 
 
 async def parse_lamoda_products(url: str) -> None:
@@ -10,7 +10,7 @@ async def parse_lamoda_products(url: str) -> None:
     A function for parsing the lamoda website via a link.
     """
 
-    mongo_service = MongoService()
+    mongo_service = await get_mongo()
 
     async with AsyncClient() as client:
         response = await client.get(url)

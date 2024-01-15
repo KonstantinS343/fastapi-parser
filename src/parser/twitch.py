@@ -1,7 +1,7 @@
 from httpx import AsyncClient, HTTPError
 
 from config import settings
-from core.mongo import MongoService
+from core.mongo import get_mongo
 from models.twitch import Twitch, Stream
 
 
@@ -10,7 +10,7 @@ async def parse_twitch(type: str, query: str, lim: str) -> None:
     A function for twitch parsing using the Twitch API, for categories, streamers and stream.
     """
     limit = int(lim)
-    mongo_service = MongoService()
+    mongo_service = await get_mongo()
 
     data = {'client_id': settings.twitch_settings.client_id, 'client_secret': settings.twitch_settings.client_secret, 'grant_type': 'client_credentials'}
 
