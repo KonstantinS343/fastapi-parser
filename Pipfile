@@ -4,24 +4,28 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-fastapi="*"
+fastapi = "*"
+httpx = "*"
+beautifulsoup4 = "*"
+uvicorn = "*"
 
-pydantic="*"
+pydantic = "*"
 
-sqlalchemy="*"
-asyncpg="*"
-alembic="*"
-psycopg2-binary="*"
+pydantic-settings ="*"
+python-dotenv = "*"
 
+pymongo = "*"
+motor = "*"
 
-fastapi-cache2="*"
+aiokafka = "*"
 
-gunicorn="*"
+redis = "*"
 
 [dev-packages]
-pytest="*"
-pytest-asyncio="*"
-pytest-mock="*"
+flake8 = "*"
+mypy = "*"
+black = "*"
+pre-commit = "*"
 
 [requires]
 python_version = "3.11"
